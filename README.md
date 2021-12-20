@@ -1,6 +1,6 @@
 # Integrate Entity Framework into Razor Page
 
-## Install packages
+## 1. Install packages
 
 ```
 dotnet new webapp
@@ -11,4 +11,15 @@ dotnet tool install --global dotnet-aspnet-codegenerator
 dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
 dotnet add package Microsoft.EntityFrameworkCore.Design
 dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+```
+
+## 2. Migrations
+
+Create Models to update database
+
+```
+dotnet ef migrations list
+dotnet ef migrations add initdb
+dotnet ef database update
+dotnet ef database drop -f
 ```
