@@ -1,5 +1,7 @@
 ﻿using System;
+using Bogus;
 using Microsoft.EntityFrameworkCore.Migrations;
+using RazorEF.Models;
 
 namespace RazorEF.Migrations
 {
@@ -21,6 +23,32 @@ namespace RazorEF.Migrations
                 {
                     table.PrimaryKey("PK_articles", x => x.Id);
                 });
+
+            // Fake Data: Bogus
+            Randomizer.Seed = new Random(8675309);
+            var fakerArticle = new Faker<Article>();
+
+            // Create sentence between 5 - 10 words
+            fakerArticle.RuleFor(a => a.Title, f => f.Lorem.Sentence(5, 5));
+
+            // Create date
+            fakerArticle.RuleFor(a => a.Created, f => f.Date.Between(new DateTime(2021, 1, 1), new DateTime(2021, 12, 20)));
+
+            // Create content between 1 - 4 paragraph
+            fakerArticle.RuleFor(a => a.Content, f => f.Lorem.Paragraphs(1, 4));
+
+            for (int i = 0; i < 150; i++)
+            {
+                // Generate article
+                Article article = fakerArticle.Generate();
+
+                // Insert Data
+                migrationBuilder.InsertData(
+                    table: "articles",
+                    columns: new[] { "Title", "Created", "Content" },
+                    values: new object[] { article.Title, article.Created, article.Content }
+                );
+            }
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
