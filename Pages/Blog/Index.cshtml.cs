@@ -18,11 +18,14 @@ namespace RazorEF.Pages_Blog
             _context = context;
         }
 
-        public IList<Article> Article { get;set; }
+        public IList<Article> Article { get; set; }
 
         public async Task OnGetAsync()
         {
-            Article = await _context.articles.ToListAsync();
+            var qr = from a in _context.articles
+                     orderby a.Created descending
+                     select a;
+            Article = await qr.ToListAsync();
         }
     }
 }
