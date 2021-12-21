@@ -23,3 +23,7 @@ dotnet ef migrations add initdb
 dotnet ef database update
 dotnet ef database drop -f
 ```
+
+## 3. Auto create CRUD Pages for Article Model
+
+`dotnet aspnet-codegenerator razorpage -m RazorEF.Models.Article -dc RazorEF.Models.MyBlogContext -outDir Pages/Blog -udl --referenceScriptLibraries`
