@@ -1,5 +1,6 @@
 @page
 @model RazorEF.Pages_Blog.IndexModel
+@using RazorEF.Helpers
 
 @{
     ViewData["Title"] = "Articles";
@@ -52,3 +53,12 @@
 }
     </tbody>
 </table>
+
+@{
+    var pagingModel = new PagingModel() {
+        CurrentPage = @Model.CurrentPage,
+        CountPages = @Model.CountPages,
+        GenerateUrl = (int? page) => Url.Page("/Blog/Index", new { p = page })
+    };
+}
+<partial name="_Paging" model="@pagingModel" /> 

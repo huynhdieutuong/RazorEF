@@ -19,20 +19,31 @@ namespace RazorEF.Pages_Blog
         }
 
         public IList<Article> Article { get; set; }
+        [BindProperty(SupportsGet = true, Name = "p")]
+        public int CurrentPage { get; set; }
+        public int CountPages { get; set; }
+        public const int ITEMS_PER_PAGE = 10;
 
         public async Task OnGetAsync(string searchText)
         {
-            var qr = from a in _context.articles select a;
+            int totalPages = await _context.articles.CountAsync();
+            CountPages = (int)Math.Ceiling((double)totalPages / ITEMS_PER_PAGE);
+            if (CurrentPage < 1) CurrentPage = 1;
+            if (CurrentPage > CountPages) CurrentPage = CountPages;
+
+            var qr = from a in _context.articles
+                     orderby a.Created descending
+                     select a;
 
             if (!string.IsNullOrEmpty(searchText))
             {
                 ViewData["searchText"] = searchText;
-                qr = qr.Where(a => a.Title.Contains(searchText));
+                qr = (IOrderedQueryable<Article>)qr.Where(a => a.Title.Contains(searchText));
             }
 
-            qr = qr.OrderByDescending(a => a.Created);
-
-            Article = await qr.ToListAsync();
+            Article = await qr.Skip((CurrentPage - 1) * ITEMS_PER_PAGE)
+                              .Take(ITEMS_PER_PAGE)
+                              .ToListAsync();
         }
     }
 }
