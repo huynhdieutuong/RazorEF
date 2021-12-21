@@ -19,10 +19,21 @@ namespace RazorEF.Pages_Blog
         }
 
         public IList<Article> Article { get; set; }
+        [BindProperty(SupportsGet = true, Name = "p")]
+        public int CurrentPage { get; set; }
+        public int CountPages { get; set; }
+        public const int ITEMS_PER_PAGE = 5;
 
         public async Task OnGetAsync(string searchText)
         {
-            var qr = from a in _context.articles select a;
+            int totalArticles = await _context.articles.CountAsync();
+            CountPages = (int)Math.Ceiling((double)totalArticles / ITEMS_PER_PAGE);
+            if (CurrentPage < 1) CurrentPage = 1;
+            if (CurrentPage > CountPages) CurrentPage = CountPages;
+
+            var qr = (from a in _context.articles select a)
+                     .Skip((CurrentPage - 1) * ITEMS_PER_PAGE)
+                     .Take(ITEMS_PER_PAGE);
 
             if (!string.IsNullOrEmpty(searchText))
             {
