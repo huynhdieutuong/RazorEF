@@ -11,14 +11,14 @@ namespace RazorEF.Models
         [Key]
         public int Id { get; set; }
 
-        [StringLength(255)]
-        [Required]
+        [StringLength(255, MinimumLength = 5, ErrorMessage = "{0} must between {2}-{1} characters")]
+        [Required(ErrorMessage = "{0} is required")]
         [Column(TypeName = "nvarchar")]
         [DisplayName("Article's Title")]
         public string Title { get; set; }
 
         [DataType(DataType.Date)]
-        [Required]
+        [Required(ErrorMessage = "{0} is required")]
         [DisplayName("Date")]
         public DateTime Created { get; set; }
 
