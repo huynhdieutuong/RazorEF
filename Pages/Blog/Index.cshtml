@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Articles";
+    string searchText = ViewData["searchText"] as string;
     int i = 0;
 }
 
@@ -10,6 +11,14 @@
 
 <p>
     <a asp-page="Create" class="btn btn-primary">Create New</a>
+    <form asp-page="Index" method="get">
+        <div class="input-group">
+            <input type="text" class="form-control" name="searchText" value="@searchText" placeholder="Input text to search title" aria-label="Input text to search title" aria-describedby="btnGroupAddon2">
+            <div class="input-group-prepend">
+                <button type="submit" class="input-group-text" id="btnGroupAddon2">Search</button>
+            </div>
+        </div>
+    </form>
 </p>
 <table class="table">
     <thead>

@@ -20,11 +20,18 @@ namespace RazorEF.Pages_Blog
 
         public IList<Article> Article { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string searchText)
         {
-            var qr = from a in _context.articles
-                     orderby a.Created descending
-                     select a;
+            var qr = from a in _context.articles select a;
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                ViewData["searchText"] = searchText;
+                qr = qr.Where(a => a.Title.Contains(searchText));
+            }
+
+            qr = qr.OrderByDescending(a => a.Created);
+
             Article = await qr.ToListAsync();
         }
     }
