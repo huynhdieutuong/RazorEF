@@ -35,7 +35,12 @@ namespace RazorEF
             });
 
             // 4. Register Identity
-            services.AddIdentity<AppUser, IdentityRole>()
+            // services.AddIdentity<AppUser, IdentityRole>()
+            //         .AddEntityFrameworkStores<MyBlogContext>()
+            //         .AddDefaultTokenProviders();
+
+            // 8.1 Use AddDefaultIdentity for Identity UI Default
+            services.AddDefaultIdentity<AppUser>()
                     .AddEntityFrameworkStores<MyBlogContext>()
                     .AddDefaultTokenProviders();
 
