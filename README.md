@@ -27,3 +27,25 @@ dotnet ef database drop -f
 ## 3. Auto create CRUD Pages for Article Model
 
 `dotnet aspnet-codegenerator razorpage -m RazorEF.Models.Article -dc RazorEF.Models.MyBlogContext -outDir Pages/Blog -udl --referenceScriptLibraries`
+
+# Identity
+
+## 5. Migrations addIdentity
+
+5.1 To create new Tables in DB: Roles, RoleClaims, Users, UserClaims,... => `dotnet ef migrations add addIdentity`
+
+5.2 But tableName has prefix "AspNet" that we don't want, so remove migrations and custome it: `dotnet ef migrations remove`
+
+5.3 Migration again and update
+
+```
+dotnet ef migrations add addIdentity
+dotnet ef database update
+```
+
+## 6. Migrations updateUser
+
+```
+dotnet ef migrations add updateUser
+dotnet ef database update
+```

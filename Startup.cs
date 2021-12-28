@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +33,38 @@ namespace RazorEF
                 string connectString = Configuration.GetConnectionString("MyBlogContext");
                 options.UseSqlServer(connectString);
             });
+
+            // 4. Register Identity
+            services.AddIdentity<AppUser, IdentityRole>()
+                    .AddEntityFrameworkStores<MyBlogContext>()
+                    .AddDefaultTokenProviders();
+
+            // 7. Custome config for Identity:
+            // Access IdentityOptions
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password
+                options.Password.RequireDigit = false; // Not require number
+                options.Password.RequireLowercase = false; // Not require lowercase
+                options.Password.RequireNonAlphanumeric = false; // Not require special characters
+                options.Password.RequireUppercase = false; // Not require uppercase
+                options.Password.RequiredLength = 3; // Minimum 3 chars
+                options.Password.RequiredUniqueChars = 1; // Unique chars
+
+                // Lock user if user login fail more than 5 times in 5 minutes
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Lock 5 minutes
+                options.Lockout.MaxFailedAccessAttempts = 5; // Login fail 5 times
+                options.Lockout.AllowedForNewUsers = true;
+
+                // Create User
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+"; // UserName only include these chars
+                options.User.RequireUniqueEmail = true;  // Email is unique
+
+                // Login
+                options.SignIn.RequireConfirmedEmail = true; // Confirm email is exists
+                options.SignIn.RequireConfirmedPhoneNumber = false; // Confirm phone number
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +86,8 @@ namespace RazorEF
 
             app.UseRouting();
 
+            // 1. Make sure add 2 middlewares:
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
