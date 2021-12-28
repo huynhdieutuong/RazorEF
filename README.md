@@ -57,3 +57,7 @@ dotnet ef database update
 8.2 Create \_LoginPartial.cshtml (Default Layout)
 
 8.3 Create /Areas/Identity/Pages/\_ViewStart.cshtml to use \_Layout.cshtml
+
+## 10. Generate code Identity Razor Pages
+
+`dotnet aspnet-codegenerator identity -dc RazorEF.Models.MyBlogContext`

@@ -42,14 +42,14 @@ namespace RazorEF
             services.Configure<MailSettings>(mailSettings);
 
             // 4. Register Identity
-            // services.AddIdentity<AppUser, IdentityRole>()
-            //         .AddEntityFrameworkStores<MyBlogContext>()
-            //         .AddDefaultTokenProviders();
-
-            // 8.1 Use AddDefaultIdentity for Identity UI Default
-            services.AddDefaultIdentity<AppUser>()
+            services.AddIdentity<AppUser, IdentityRole>()
                     .AddEntityFrameworkStores<MyBlogContext>()
                     .AddDefaultTokenProviders();
+
+            // 8.1 Use AddDefaultIdentity for Identity UI Default
+            // services.AddDefaultIdentity<AppUser>()
+            //         .AddEntityFrameworkStores<MyBlogContext>()
+            //         .AddDefaultTokenProviders();
 
             // 7. Custome config for Identity:
             // Access IdentityOptions
