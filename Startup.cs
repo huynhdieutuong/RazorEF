@@ -63,7 +63,8 @@ namespace RazorEF
                 options.Password.RequiredLength = 3; // Minimum 3 chars
                 options.Password.RequiredUniqueChars = 1; // Unique chars
 
-                // Lock user if user login fail more than 5 times in 5 minutes
+                // 11.3 Setup lockout (lockoutOnFailure = true)
+                // & Lock user if user login fail more than 5 times in 5 minutes
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Lock 5 minutes
                 options.Lockout.MaxFailedAccessAttempts = 5; // Login fail 5 times
                 options.Lockout.AllowedForNewUsers = true;
