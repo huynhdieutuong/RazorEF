@@ -76,6 +76,15 @@ namespace RazorEF
                 // Login
                 options.SignIn.RequireConfirmedEmail = true; // Confirm email is exists
                 options.SignIn.RequireConfirmedPhoneNumber = false; // Confirm phone number
+                options.SignIn.RequireConfirmedAccount = true; // 10.3 Default false. When register, auto login, not confirm
+            });
+
+            // 10.2 Config Authorize
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/login";
+                options.LogoutPath = "/logout";
+                options.AccessDeniedPath = "/access-denied";
             });
         }
 

@@ -1,4 +1,4 @@
-@page
+@page "/register"
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -12,6 +12,11 @@
             <h4>Create a new account.</h4>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.UserName"></label>
+                <input asp-for="Input.UserName" class="form-control" />
+                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Input.Email"></label>
                 <input asp-for="Input.Email" class="form-control" />
@@ -32,15 +37,14 @@
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
-            <h4>Use another service to register.</h4>
+            <h4>Register with Google, Facebook, Twitter,...</h4>
             <hr />
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
                     <div>
                         <p>
-                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
+                            Not config
                         </p>
                     </div>
                 }

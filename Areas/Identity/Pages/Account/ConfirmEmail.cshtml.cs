@@ -16,10 +16,12 @@ namespace RazorEF.Areas.Identity.Pages.Account
     public class ConfirmEmailModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public ConfirmEmailModel(UserManager<AppUser> userManager)
+        public ConfirmEmailModel(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [TempData]
@@ -38,10 +40,21 @@ namespace RazorEF.Areas.Identity.Pages.Account
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
 
+            // 10.4 Decode to confirm email
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
             StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
-            return Page();
+
+            // 10.5 If confirm success, auto login
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, false);
+                return RedirectToPage("/Index");
+            }
+            else
+            {
+                return Content("Confirm Email failure.");
+            }
         }
     }
 }
