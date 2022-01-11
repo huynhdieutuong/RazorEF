@@ -1,7 +1,7 @@
-﻿@page
+﻿@page "/external-login"
 @model ExternalLoginModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Register or link to external service";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -19,6 +19,7 @@
         <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                @* 12.11.1 Input email, if not email: register, if exists email: link account and login *@
                 <label asp-for="Input.Email"></label>
                 <input asp-for="Input.Email" class="form-control" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>

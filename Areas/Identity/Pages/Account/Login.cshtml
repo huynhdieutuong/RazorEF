@@ -3,9 +3,14 @@
 
 @{
     ViewData["Title"] = "Log in";
+    var message = @TempData["ErrorMessage"];
 }
 
 <h1>@ViewData["Title"]</h1>
+@* 12.8.3 Display error message when not get info *@
+@if (TempData.ContainsKey("ErrorMessage")) {
+    <partial name="/Areas/Identity/Pages/Account/_StatusMessage.cshtml" model="message" />
+}
 <div class="row">
     <div class="col-md-4">
         <section>
@@ -61,6 +66,7 @@
                 }
                 else
                 {
+                    @* 12.3 If have ExternalLogins, show button Google. When Click button, it will POST to /ExternalLogin*@
                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
                         <div>
                             <p>

@@ -61,3 +61,9 @@ dotnet ef database update
 ## 10. Generate code Identity Razor Pages
 
 `dotnet aspnet-codegenerator identity -dc RazorEF.Models.MyBlogContext`
+
+## 11. Generate configs for Google & Facebook Login
+
+Google: https://console.cloud.google.com/ \
+Facebook: https://developers.facebook.com/apps \
+Refs: https://xuanthulab.net/asp-net-razor-su-dung-tai-khoan-google-de-xac-thuc-trong-identity.html

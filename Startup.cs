@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -87,6 +89,27 @@ namespace RazorEF
                 options.LogoutPath = "/logout";
                 options.AccessDeniedPath = "/access-denied";
             });
+
+            // 12.1 Create Credentials in https://console.cloud.google.com/ & Config ClientId, ClientSecret
+            services.AddAuthentication()
+                    .AddGoogle(options =>
+                    {
+                        var googleConfig = Configuration.GetSection("Authentication:Google");
+                        options.ClientId = googleConfig["ClientId"];
+                        options.ClientSecret = googleConfig["ClientSecret"];
+                        options.CallbackPath = "/login-with-google"; // default: https://localhost:5001/signin-google
+                        // 12.5 when User accept Google login, it will redirect to /login-with-google?token and save token to session
+                    })
+                    .AddFacebook(options => // 13 Config Facebook login
+                    {
+                        var facebookConfig = Configuration.GetSection("Authentication:Facebook");
+                        options.AppId = facebookConfig["AppId"];
+                        options.AppSecret = facebookConfig["AppSecret"];
+                        options.CallbackPath = "/login-with-facebook";
+                    })
+                    // .AddTwitter()
+                    // .AddMicrosoftAccount()
+                    ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

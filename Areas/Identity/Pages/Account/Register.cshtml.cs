@@ -73,6 +73,12 @@ namespace RazorEF.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            // 12.2 Check externalLogins
+            foreach (var provider in ExternalLogins)
+            {
+                _logger.LogInformation(provider.Name); // provider.Name = Google
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
