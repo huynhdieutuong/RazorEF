@@ -19,7 +19,7 @@ namespace RazorEF.Areas.Admin.Pages.Role
 
         public async Task OnGet()
         {
-            Roles = await _roleManager.Roles.ToListAsync();
+            Roles = await _roleManager.Roles.OrderBy(r => r.Name).ToListAsync();
         }
 
         public void OnPost() => RedirectToPage();
