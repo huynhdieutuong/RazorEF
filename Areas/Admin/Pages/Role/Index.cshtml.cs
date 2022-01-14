@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RazorEF.Models;
 
 namespace RazorEF.Areas.Admin.Pages.Role
@@ -14,8 +15,13 @@ namespace RazorEF.Areas.Admin.Pages.Role
         {
         }
 
-        public void OnGet()
+        public List<IdentityRole> Roles { get; set; }
+
+        public async Task OnGet()
         {
+            Roles = await _roleManager.Roles.ToListAsync();
         }
+
+        public void OnPost() => RedirectToPage();
     }
 }
