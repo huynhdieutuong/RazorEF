@@ -67,3 +67,7 @@ dotnet ef database update
 Google: https://console.cloud.google.com/ \
 Facebook: https://developers.facebook.com/apps \
 Refs: https://xuanthulab.net/asp-net-razor-su-dung-tai-khoan-google-de-xac-thuc-trong-identity.html
+
+## 12. Generate new page
+
+`dotnet new page -n Index -o Areas/Admin/Pages/Role -na YourNamespace`
