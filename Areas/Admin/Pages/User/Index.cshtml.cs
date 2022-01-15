@@ -22,9 +22,32 @@ namespace RazorEF.Areas.Admin.Pages.User
 
         public List<AppUser> Users { get; set; }
 
-        public async Task OnGet()
+        [BindProperty(SupportsGet = true, Name = "p")]
+        public int CurrentPage { get; set; }
+        public int CountPages { get; set; }
+        public const int ITEMS_PER_PAGE = 10;
+        public int TotalUsers { get; set; }
+
+        public async Task OnGetAsync(string searchText)
         {
-            Users = await _userManager.Users.OrderBy(u => u.UserName).ToListAsync();
+            TotalUsers = await _userManager.Users.CountAsync();
+            CountPages = (int)Math.Ceiling((double)TotalUsers / ITEMS_PER_PAGE);
+            if (CurrentPage < 1) CurrentPage = 1;
+            if (CurrentPage > CountPages) CurrentPage = CountPages;
+
+            var qr = from user in _userManager.Users
+                     orderby user.UserName
+                     select user;
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                ViewData["searchText"] = searchText;
+                qr = (IOrderedQueryable<AppUser>)qr.Where(user => user.UserName.Contains(searchText));
+            }
+
+            Users = await qr.Skip((CurrentPage - 1) * ITEMS_PER_PAGE)
+                            .Take(ITEMS_PER_PAGE)
+                            .ToListAsync();
         }
 
         public void OnPost() => RedirectToPage();
