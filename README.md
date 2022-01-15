@@ -71,3 +71,43 @@ Refs: https://xuanthulab.net/asp-net-razor-su-dung-tai-khoan-google-de-xac-thuc-
 ## 12. Generate new page
 
 `dotnet new page -n Index -o Areas/Admin/Pages/Role -na YourNamespace`
+
+## 13. Fake users data
+
+1. `dotnet ef migrations add SeedUsers`
+2. At seedUsers.cs: add 150 users in Up method
+
+```
+for (int i = 1; i < 150; i++)
+  {
+      migrationBuilder.InsertData(
+          "Users",
+          columns: new[] {
+              "Id",
+              "UserName",
+              "Email",
+              "SecurityStamp",
+              "EmailConfirmed",
+              "PhoneNumberConfirmed",
+              "TwoFactorEnabled",
+              "LockoutEnabled",
+              "AccessFailedCount",
+              "HomeAddress"
+          },
+          values: new object[] {
+              Guid.NewGuid().ToString(),
+              "User-" + i.ToString("D3"),
+              $"email-{i.ToString("D3")}@example.com",
+              Guid.NewGuid().ToString(),
+              true,
+              false,
+              false,
+              false,
+              0,
+              "...@#%..."
+          }
+      );
+  }
+```
+
+3. `dotnet ef database update`
