@@ -1,0 +1,30 @@
+﻿@* 17.1 params roleId *@
+@page "/admin/edit-role/{roleId}" 
+@model RazorEF.Areas.Admin.Pages.Role.EditModel
+@{
+  ViewData["Title"] = "Edit role";
+}
+<h2>@ViewData["Title"]</h2>
+
+<partial name="_StatusMessage" model="@Model.StatusMessage"></partial>
+
+<hr>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.Name"></label>
+                <input asp-for="Input.Name" class="form-control" />
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Edit</button>
+            <a class="btn btn-primary" asp-page="./Index">Roles list</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+  <partial name="_ValidationScriptsPartial" />
+}
