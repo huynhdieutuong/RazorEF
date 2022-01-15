@@ -1,0 +1,26 @@
+﻿@page "/admin/users"
+@model RazorEF.Areas.Admin.Pages.User.IndexModel
+@{
+  ViewData["Title"] = "Users list";
+}
+<h2>@ViewData["Title"]</h2>
+
+<partial name="_StatusMessage" model="@Model.StatusMessage"></partial>
+
+<table class="table">
+  <tr>
+    <th>User name</th>
+    <th>Role</th>
+    <th>Actions</th>
+  </tr>
+  @foreach (var user in Model.Users)
+  {
+    <tr>
+      <td>@user.UserName</td>
+      <td></td>
+      <td>
+        <a class="btn btn-success btn-sm" asp-page="./AddRole" asp-route-userId="@user.Id">Update</a>
+      </td>
+    </tr>
+  }
+</table>
