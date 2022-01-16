@@ -20,7 +20,13 @@ namespace RazorEF.Areas.Admin.Pages.User
         [TempData]
         public string StatusMessage { get; set; }
 
-        public List<AppUser> Users { get; set; }
+        // 19.1 Create UserAndRole to add RoleNames
+        public class UserAndRole : AppUser
+        {
+            public string RoleNames { get; set; }
+        }
+
+        public List<UserAndRole> Users { get; set; }
 
         [BindProperty(SupportsGet = true, Name = "p")]
         public int CurrentPage { get; set; }
@@ -47,7 +53,19 @@ namespace RazorEF.Areas.Admin.Pages.User
 
             Users = await qr.Skip((CurrentPage - 1) * ITEMS_PER_PAGE)
                             .Take(ITEMS_PER_PAGE)
+                            .Select(user => new UserAndRole() // 19.2 Convert AppUser to UserAndRole
+                            {
+                                Id = user.Id,
+                                UserName = user.UserName
+                            })
                             .ToListAsync();
+
+            // 19.3 Get Roles for User
+            foreach (var user in Users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                user.RoleNames = string.Join(", ", roles);
+            }
         }
 
         public void OnPost() => RedirectToPage();
