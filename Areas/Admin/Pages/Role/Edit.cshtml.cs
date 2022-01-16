@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,6 +11,7 @@ using RazorEF.Models;
 
 namespace RazorEF.Areas.Admin.Pages.Role
 {
+    [Authorize(Policy = "AllowEditRole")] // 20.2 Use AllowEditRole policy
     public class EditModel : RolePageModel
     {
         public EditModel(RoleManager<IdentityRole> roleManger, MyBlogContext context) : base(roleManger, context)

@@ -114,6 +114,18 @@ namespace RazorEF
 
             // 16.3 Register AppIdentityErrorDescriber
             services.AddSingleton<IdentityErrorDescriber, AppIdentityErrorDescriber>();
+
+            // 20.1 Register Policies
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AllowEditRole", policyBuilder =>
+                {
+                    // Required login. Roles: Admin && Editor
+                    policyBuilder.RequireAuthenticatedUser();
+                    policyBuilder.RequireRole("Admin");
+                    policyBuilder.RequireRole("Editor");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
