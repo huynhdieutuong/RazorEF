@@ -111,3 +111,9 @@ for (int i = 1; i < 150; i++)
 ```
 
 3. `dotnet ef database update`
+
+## 14. Add library for FE by libman
+
+1. Install libman: `dotnet tool install -g Microsoft.Web.LibraryManager.Cli`
+2. Init libman: `libman init` -> create libman.json
+3. Install library: `libman install multiple-select@1.2.3`
