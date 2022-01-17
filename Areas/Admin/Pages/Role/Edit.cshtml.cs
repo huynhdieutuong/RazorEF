@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using RazorEF.Models;
 
 namespace RazorEF.Areas.Admin.Pages.Role
@@ -20,6 +21,8 @@ namespace RazorEF.Areas.Admin.Pages.Role
 
         [BindProperty]
         public InputModel Input { get; set; }
+        // 21.2 Type's claim in RoleClaims table: IdentityRoleClaim<string>
+        public List<IdentityRoleClaim<string>> Claims { get; set; }
         public IdentityRole Role { get; set; }
 
         public class InputModel
@@ -42,6 +45,8 @@ namespace RazorEF.Areas.Admin.Pages.Role
                 {
                     Name = Role.Name
                 };
+                // 21.2 Get Claims's Role by DbContext (RoleClaims table)
+                Claims = await _context.RoleClaims.Where(roleClaim => roleClaim.RoleId == Role.Id).ToListAsync();
                 return Page();
             };
 
@@ -55,6 +60,8 @@ namespace RazorEF.Areas.Admin.Pages.Role
 
             Role = await _roleManager.FindByIdAsync(roleId);
             if (Role == null) return NotFound("Not found role");
+
+            Claims = await _context.RoleClaims.Where(roleClaim => roleClaim.RoleId == Role.Id).ToListAsync();
 
             if (!ModelState.IsValid)
             {

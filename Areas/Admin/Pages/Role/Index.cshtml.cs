@@ -31,11 +31,31 @@ namespace RazorEF.Areas.Admin.Pages.Role
         {
         }
 
-        public List<IdentityRole> Roles { get; set; }
+        public class RoleModel : IdentityRole
+        {
+            public string[] Claims { get; set; }
+        }
+
+        public List<RoleModel> Roles { get; set; }
 
         public async Task OnGet()
         {
-            Roles = await _roleManager.Roles.OrderBy(r => r.Name).ToListAsync();
+            var roles = await _roleManager.Roles.OrderBy(r => r.Name).ToListAsync();
+            Roles = new List<RoleModel>();
+            foreach (var role in roles)
+            {
+                // 21.1 Get Claims's Role by role (Roles table)
+                var claims = await _roleManager.GetClaimsAsync(role);
+                var claimsString = claims.Select(c => c.Type + "=" + c.Value);
+
+                var roleModel = new RoleModel()
+                {
+                    Name = role.Name,
+                    Id = role.Id,
+                    Claims = claimsString.ToArray()
+                };
+                Roles.Add(roleModel);
+            }
         }
 
         public void OnPost() => RedirectToPage();
