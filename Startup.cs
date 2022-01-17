@@ -120,10 +120,13 @@ namespace RazorEF
             {
                 options.AddPolicy("AllowEditRole", policyBuilder =>
                 {
-                    // Required login. Roles: Admin && Editor
+                    // Required login & have claims: "canedit:post" or "canedit:user"
                     policyBuilder.RequireAuthenticatedUser();
-                    policyBuilder.RequireRole("Admin");
-                    policyBuilder.RequireRole("Editor");
+                    // policyBuilder.RequireRole("Admin");
+                    // policyBuilder.RequireRole("Editor");
+
+                    // Register Claim for AllowEditRole policy
+                    policyBuilder.RequireClaim("canedit", "post", "user");
                 });
             });
         }

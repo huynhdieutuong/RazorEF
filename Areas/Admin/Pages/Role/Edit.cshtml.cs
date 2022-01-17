@@ -13,6 +13,7 @@ using RazorEF.Models;
 namespace RazorEF.Areas.Admin.Pages.Role
 {
     [Authorize(Policy = "AllowEditRole")] // 20.2 Use AllowEditRole policy
+    // User must login and have Role that contains "canedit:post" or "canedit:user" claims
     public class EditModel : RolePageModel
     {
         public EditModel(RoleManager<IdentityRole> roleManger, MyBlogContext context) : base(roleManger, context)
