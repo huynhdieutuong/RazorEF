@@ -23,7 +23,10 @@
             <a class="btn btn-primary" asp-page="./Index">Roles list</a>
         </form>
         <hr>
-        <p>Claims</p>
+        <p>
+          Claims
+          <a asp-page="./AddRoleClaim" asp-route-roleId="@Model.Role.Id">Add Claim</a>
+        </p>
         @if (Model.Claims.Count > 0) 
         {
           <ul>
