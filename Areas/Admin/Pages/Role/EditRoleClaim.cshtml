@@ -24,6 +24,7 @@
                 <span asp-validation-for="Input.ClaimValue" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
+            <button type="submit" class="btn btn-danger" asp-page-handler="Delete">Delete</button>
             <a class="btn btn-primary" asp-page="./Edit" asp-route-roleId="@Model.Role.Id">Edit role</a>
         </form>
     </div>

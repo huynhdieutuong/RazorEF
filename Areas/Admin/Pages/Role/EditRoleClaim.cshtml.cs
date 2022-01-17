@@ -83,5 +83,20 @@ namespace RazorEF.Areas.Admin.Pages.Role
 
             return RedirectToPage("./Edit", new { roleId = Role.Id });
         }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int claimId)
+        {
+            Claim = _context.RoleClaims.Where(c => c.Id == claimId).FirstOrDefault();
+            if (Claim == null) return NotFound("Claim not found");
+
+            Role = await _roleManager.FindByIdAsync(Claim.RoleId);
+            if (Role == null) return NotFound("Role not found");
+
+            await _roleManager.RemoveClaimAsync(Role, new Claim(Claim.ClaimType, Claim.ClaimValue));
+
+            StatusMessage = "Delete claim successfully.";
+
+            return RedirectToPage("./Edit", new { roleId = Role.Id });
+        }
     }
 }
