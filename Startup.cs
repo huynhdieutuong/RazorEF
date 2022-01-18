@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using App.Security.Requirements;
 using App.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RazorEF.Models;
+using RazorEF.Security.Requirements;
 
 namespace RazorEF
 {
@@ -128,7 +131,19 @@ namespace RazorEF
                     // Register Claim for AllowEditRole policy
                     policyBuilder.RequireClaim("canedit", "post", "user");
                 });
+
+                // 22.2 Add Policy InGenZ with GenZRequirement
+                options.AddPolicy("InGenZ", policyBuilder =>
+                {
+                    policyBuilder.RequireAuthenticatedUser();
+                    policyBuilder.Requirements.Add(new GenZRequirement());
+
+                    // new GenZRequirement() -> AuthorizationHandler
+                });
             });
+
+            // 22.5 Register AppAuthorizationHandler
+            services.AddTransient<IAuthorizationHandler, AppAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
