@@ -41,7 +41,7 @@
             <ul>
                 @foreach (var claim in Model.ClaimsInUserClaims)
                 {
-                    <li>@claim.ClaimType : @claim.ClaimValue</li>
+                    <li><a asp-page="./EditUserRoleClaim" asp-page-handler="EditClaim" asp-route-claimId="@claim.Id">@claim.ClaimType : @claim.ClaimValue</a></li>
                 }
             </ul>
         }

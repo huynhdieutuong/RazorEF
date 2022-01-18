@@ -1,4 +1,4 @@
-﻿@page "/admin/edit-user-claim/{userId}"
+﻿@page "/admin/edit-user-claim/{userId?}"
 @model EditUserRoleClaimModel
 @{
     ViewData["Title"] = "Edit user claim";
@@ -21,7 +21,14 @@
                 <input asp-for="Input.ClaimValue" class="form-control" />
                 <span asp-validation-for="Input.ClaimValue" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Update</button>
+            @if (Model.UserClaim == null) 
+            {
+                <button type="submit" class="btn btn-primary">Create</button>
+            } 
+            else 
+            {
+                <button type="submit" class="btn btn-primary">Update</button>
+            }
             <a class="btn btn-primary" asp-page="./AddRole" asp-route-userId="@Model.User.Id">Edit user</a>
         </form>
     </div>

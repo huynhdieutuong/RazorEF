@@ -43,6 +43,7 @@ namespace RazorEF.Areas.Admin.Pages.User
             public string ClaimValue { get; set; }
         }
         public AppUser User { get; set; }
+        public IdentityUserClaim<string> UserClaim { get; set; }
 
         public NotFoundObjectResult OnGet() => NotFound("Can not access");
 
@@ -75,6 +76,52 @@ namespace RazorEF.Areas.Admin.Pages.User
             StatusMessage = "Add claim for user successfully.";
 
             return RedirectToPage("./AddRole", new { userId = userId });
+        }
+
+        public async Task<IActionResult> OnGetEditClaimAsync(int claimId)
+        {
+            UserClaim = _context.UserClaims.Where(c => c.Id == claimId).FirstOrDefault();
+            if (UserClaim == null) return NotFound("Claim not found");
+
+            User = await _userManager.FindByIdAsync(UserClaim.UserId);
+            if (User == null) return NotFound("User not found");
+
+            Input = new InputModel()
+            {
+                ClaimType = UserClaim.ClaimType,
+                ClaimValue = UserClaim.ClaimValue
+            };
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostEditClaimAsync(int claimId)
+        {
+            UserClaim = _context.UserClaims.Where(c => c.Id == claimId).FirstOrDefault();
+            if (UserClaim == null) return NotFound("Claim not found");
+
+            User = await _userManager.FindByIdAsync(UserClaim.UserId);
+            if (User == null) return NotFound("User not found");
+
+            if (!ModelState.IsValid) return Page();
+
+            // Check duplicate claim
+            var userClaims = _context.UserClaims;
+            if (userClaims.Any(c => c.ClaimType == Input.ClaimType && c.ClaimValue == Input.ClaimValue && c.Id != UserClaim.Id))
+            {
+                ModelState.AddModelError(string.Empty, $"Claim {Input.ClaimType} : {Input.ClaimValue} is already taken.");
+                return Page();
+            }
+
+            // Upadate claim
+            UserClaim.ClaimType = Input.ClaimType;
+            UserClaim.ClaimValue = Input.ClaimValue;
+
+            await _context.SaveChangesAsync();
+
+            StatusMessage = "Edit claim for user successfully.";
+
+            return RedirectToPage("./AddRole", new { userId = User.Id });
         }
     }
 }
