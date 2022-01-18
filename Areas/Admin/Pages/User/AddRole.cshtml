@@ -33,7 +33,10 @@
                 }
             </ul>
         }
-        <p>Claims from direct User:</p>
+        <p>
+            Claims from direct User:
+            <a asp-page="./EditUserRoleClaim" asp-page-handler="AddClaim" asp-route-userId="@Model.User.Id">Add user claim</a>
+        </p>
         @if (Model.ClaimsInUserClaims.Count > 0) {
             <ul>
                 @foreach (var claim in Model.ClaimsInUserClaims)
