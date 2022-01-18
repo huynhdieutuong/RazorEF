@@ -17,15 +17,18 @@ namespace RazorEF.Areas.Admin.Pages.User
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly MyBlogContext _context;
 
         public AddRoleModel(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            MyBlogContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         [TempData]
@@ -37,6 +40,26 @@ namespace RazorEF.Areas.Admin.Pages.User
         [Display(Name = "Roles")]
         public string[] RoleNames { get; set; }
         public SelectList AllRoles { get; set; }
+        public List<IdentityRoleClaim<string>> ClaimsInRoleClaims { get; set; }
+        public List<IdentityUserClaim<string>> ClaimsInUserClaims { get; set; }
+
+        async Task GetClaims(string userId)
+        {
+            var listUserRoles = from role in _context.Roles
+                                join user in _context.UserRoles on role.Id equals user.RoleId
+                                where user.UserId == userId
+                                select role;
+
+            var claimsInRoleClaims = from claim in _context.RoleClaims
+                                     join role in listUserRoles on claim.RoleId equals role.Id
+                                     select claim;
+
+            ClaimsInRoleClaims = await claimsInRoleClaims.ToListAsync();
+
+            ClaimsInUserClaims = await (from claim in _context.UserClaims
+                                        where claim.UserId == userId
+                                        select claim).ToListAsync();
+        }
 
         public async Task<IActionResult> OnGetAsync(string userId)
         {
@@ -55,6 +78,8 @@ namespace RazorEF.Areas.Admin.Pages.User
             List<string> roleNames = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
             AllRoles = new SelectList(roleNames);
 
+            await GetClaims(userId);
+
             return Page();
         }
 
@@ -72,6 +97,8 @@ namespace RazorEF.Areas.Admin.Pages.User
             {
                 return Page();
             }
+
+            await GetClaims(userId);
 
             // 18.3 Delete and add roles
             var oldRoleNames = (await _userManager.GetRolesAsync(User)).ToArray<string>();
