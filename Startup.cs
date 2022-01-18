@@ -146,6 +146,12 @@ namespace RazorEF
                 {
                     policyBuilder.RequireRole("Admin");
                 });
+
+                // 24.1 Add Policy CanUpdateArticle
+                options.AddPolicy("CanUpdateArticle", policyBuilder =>
+                {
+                    policyBuilder.Requirements.Add(new ArticleUpdateRequirement());
+                });
             });
 
             // 22.5 Register AppAuthorizationHandler

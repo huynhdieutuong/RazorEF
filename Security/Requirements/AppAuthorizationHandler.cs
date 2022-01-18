@@ -36,9 +36,38 @@ namespace RazorEF.Security.Requirements
                         context.Succeed(requirement);
                     }
                 }
+
+                // 24.4 Handle ArticleUpdateRequirement
+                if (requirement is ArticleUpdateRequirement)
+                {
+                    bool canUpdate = CanUpdateArticle(context.User, context.Resource, (ArticleUpdateRequirement)requirement);
+                    if (canUpdate) context.Succeed(requirement);
+                }
             }
 
             return Task.CompletedTask;
+        }
+
+        private bool CanUpdateArticle(ClaimsPrincipal user, object resource, ArticleUpdateRequirement requirement)
+        {
+            if (user.IsInRole("Admin"))
+            {
+                _logger.LogInformation("Admin can update any articles.");
+                return true;
+            }
+
+            var article = resource as Article;
+            var dateCreated = article.Created;
+            var dateCanUpdate = new DateTime(requirement.Year, requirement.Month, requirement.Date);
+
+            if (dateCreated < dateCanUpdate)
+            {
+                _logger.LogInformation("Not Admin & Over date to can update.");
+                return false;
+            }
+
+            _logger.LogInformation("Not Admin & In date to can update.");
+            return true;
         }
 
         // 22.4.2 Create IsGenZ to verify

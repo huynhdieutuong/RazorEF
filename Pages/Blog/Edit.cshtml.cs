@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,10 +14,12 @@ namespace RazorEF.Pages_Blog
     public class EditModel : PageModel
     {
         private readonly RazorEF.Models.MyBlogContext _context;
+        private readonly IAuthorizationService _authorizationService;
 
-        public EditModel(RazorEF.Models.MyBlogContext context)
+        public EditModel(RazorEF.Models.MyBlogContext context, IAuthorizationService authorizationService)
         {
             _context = context;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
@@ -51,7 +54,16 @@ namespace RazorEF.Pages_Blog
 
             try
             {
-                await _context.SaveChangesAsync();
+                // 24.2 Check user meets CanUpdateArticle policy
+                var canUpdate = await _authorizationService.AuthorizeAsync(this.User, Article, "CanUpdateArticle");
+                if (canUpdate.Succeeded)
+                {
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return Content("Don't have permission to access");
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
