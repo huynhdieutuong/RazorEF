@@ -123,5 +123,20 @@ namespace RazorEF.Areas.Admin.Pages.User
 
             return RedirectToPage("./AddRole", new { userId = User.Id });
         }
+
+        public async Task<IActionResult> OnPostDeleteClaimAsync(int claimId)
+        {
+            UserClaim = _context.UserClaims.Where(c => c.Id == claimId).FirstOrDefault();
+            if (UserClaim == null) return NotFound("Claim not found");
+
+            User = await _userManager.FindByIdAsync(UserClaim.UserId);
+            if (User == null) return NotFound("User not found");
+
+            await _userManager.RemoveClaimAsync(User, new Claim(UserClaim.ClaimType, UserClaim.ClaimValue));
+
+            StatusMessage = $"Delete {UserClaim.ClaimType} : {UserClaim.ClaimValue} claim successfully.";
+
+            return RedirectToPage("./AddRole", new { userId = User.Id });
+        }
     }
 }

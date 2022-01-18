@@ -28,6 +28,7 @@
             else 
             {
                 <button type="submit" class="btn btn-primary">Update</button>
+                <button type="submit" class="btn btn-danger" asp-page-handler="DeleteClaim" asp-route-claimId="@Model.UserClaim.Id">Delete</button>
             }
             <a class="btn btn-primary" asp-page="./AddRole" asp-route-userId="@Model.User.Id">Edit user</a>
         </form>
