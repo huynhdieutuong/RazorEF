@@ -140,6 +140,12 @@ namespace RazorEF
 
                     // new GenZRequirement() -> AuthorizationHandler
                 });
+
+                // 23.1 Add Policy ShowAdminMenu
+                options.AddPolicy("ShowAdminMenu", policyBuilder =>
+                {
+                    policyBuilder.RequireRole("Admin");
+                });
             });
 
             // 22.5 Register AppAuthorizationHandler

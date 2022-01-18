@@ -1,0 +1,19 @@
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService authorizationService
+
+@{
+  @* 23.2 Check user have ShowAdminMenu policy *@
+  var resultAuthorize = await authorizationService.AuthorizeAsync(this.User, "ShowAdminMenu");
+}
+
+@if (resultAuthorize.Succeeded) 
+{
+  <li class="nav-item dropdown">
+    <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" data-toggle="dropdown">Manage</a>
+    <div class="dropdown-menu dropdown-menu-right">
+      <a class="dropdown-item" asp-page="/Role/Index" asp-area="Admin">Role Management</a>
+      <div class="dropdown-devider"></div>
+      <a class="dropdown-item" asp-page="/User/Index" asp-area="Admin">User Management</a>
+    </div>
+  </li>
+}
